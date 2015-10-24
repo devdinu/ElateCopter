@@ -20,7 +20,7 @@ class GUI_manager():
             time.sleep(0.1)
             events = pygame.event.get()
             self.check_for_exit_event(events)
-            self.event_get_keys_handler(events)
+            if not self.QUIT_GUI: self.event_get_keys_handler(events)
 
     def check_for_exit_event(self, events):
         for e in events:

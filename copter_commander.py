@@ -6,11 +6,12 @@ class CopterCommander():
         self.thrust = CopterConfigs.MIN_THRUS_TO_TEST
         self.yaw = 0
         self.roll = self.pitch = 0
-        self.thrust_offset = 500
+        CopterConfigs.THRUST_OFFSET
         self.yaw_offset = 1
         self.roll_offset = self.pitch_offset = 0.3
         self.copter_commander = None
         print "initialized copter commander!"
+
 
     def debug_current_values(self):
         print "values: ", self.roll, self.pitch, self.yaw, self.thrust
@@ -45,11 +46,11 @@ class CopterCommander():
                 self.copter_commander.send_setpoint(self.roll, self.pitch, self.yaw, self.thrust)
 
     def increase_thrust(self):
-        self.thrust += self.thrust_offset
+        self.thrust += CopterConfigs.THRUST_OFFSET
         self.send_commands()
 
     def decrease_thrust(self):
-        self.thrust -= self.thrust_offset
+        self.thrust -= CopterConfigs.THRUST_OFFSET
         self.send_commands()
 
     def roll_left(self):

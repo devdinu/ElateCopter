@@ -46,13 +46,13 @@ class CopterInterface():
         while not self.copter_commander.is_commander_link_set():
             print "In Test Flight Mode ..."
             time.sleep(0.3)
-        Utils.test_flight_for_short_duration(50, self.crazyflie, CopterControlParams(thrust=40000))
+        Utils.test_flight_for_short_duration(5, self.crazyflie, CopterControlParams(thrust=10000))
         print("Test Flight Success.")
 
     def link_commander_to_copter(self, link):
         print "[INTF] link to copter commander successful.", link
         self.copter_commander.set_commander(self.crazyflie.commander)
-        self.test_flight()
+        # self.test_flight()
 
     def initialize_event_handler(self):
         gui_manager = GUI_manager(self.copter_commander)
