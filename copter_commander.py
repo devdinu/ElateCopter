@@ -3,29 +3,25 @@ from copter_config import CopterConfigs
 
 class CopterCommander():
     def __init__(self):
-        self.thrust = CopterConfigs.MIN_THRUS_TO_TEST
+        self.thrust = CopterConfigs.MIN_THRUST
         self.yaw = 0
         self.roll = self.pitch = 0
-        CopterConfigs.THRUST_OFFSET
-        self.yaw_offset = 1
-        self.roll_offset = self.pitch_offset = 0.3
         self.copter_commander = None
         print "initialized copter commander!"
 
-
     def debug_current_values(self):
-        print "values: ", self.roll, self.pitch, self.yaw, self.thrust
+        print "=> roll:", self.roll, " pitch: ", self.pitch, " yaw: ", self.yaw, " thrust ", self.thrust
 
     def set_commander(self, commander):
         self.copter_commander = commander
-        print self.copter_commander
+        print "CopterCommander have been set."
 
     def check_values_range(self):
         self.thrust = min(self.thrust, CopterConfigs.MAX_THRUST)
         self.thrust = max(self.thrust, CopterConfigs.MIN_THRUST)
-        self.yaw = min(self.yaw, CopterConfigs.MIN_YAW)
-
-    # self.roll = max(self.roll, CopterConfigs.MIN_ROLL)
+        self.yaw = max(self.yaw, CopterConfigs.MIN_YAW)
+        self.yaw = min(self.yaw, CopterConfigs.MAX_YAW)
+        # self.roll = max(self.roll, CopterConfigs.MIN_ROLL)
 
     def get_flying_params(self):
         return self.roll, self.pitch, self.yaw, self.thrust
@@ -54,54 +50,58 @@ class CopterCommander():
         self.send_commands()
 
     def roll_left(self):
-        self.roll -= self.roll_offset
+        self.roll -= CopterConfigs.ROLL_OFFSET
         self.send_commands()
 
     def roll_right(self):
-        self.roll += self.roll_offset
+        self.roll += CopterConfigs.ROLL_OFFSET
         self.send_commands()
 
     def yaw_left(self):
-        self.yaw -= self.yaw_offset
+        self.yaw -= CopterConfigs.YAW_OFFSET
         self.send_commands()
 
     def yaw_right(self):
-        self.yaw += self.yaw_offset
+        self.yaw += CopterConfigs.YAW_OFFSET
         self.send_commands()
 
     def forward_pitch_down(self):
-        self.pitch += self.pitch_offset
+        self.pitch += CopterConfigs.PITCH_OFFSET
         self.send_commands()
 
     def backward_pitch_up(self):
-        self.pitch -= self.pitch_offset
+        self.pitch -= CopterConfigs.PITCH_OFFSET
         self.send_commands()
 
     def halt(self):
-        self.thrust = self.yaw = self.roll = self.pitch = 0
+        self.thrust = CopterConfigs.THRUST_RESET
+        self.yaw = CopterConfigs.YAW_RESET
+        self.roll = CopterConfigs.ROLL_RESET
+        self.pitch = CopterConfigs.PITCH_RESET
         self.send_commands()
 
     def notify(self, key):
         # print "notified by keypress event", key
-        if key == "K_UP":
+        if key == "INCREASE_THRUST":
             self.increase_thrust()
-        elif key == "K_DOWN":
+        elif key == "DECREASE_THRUST":
             self.decrease_thrust()
-        elif key == "K_LEFT":
+        elif key == "ROLL_LEFT":
             self.roll_left()
-        elif key == "K_RIGHT":
+        elif key == "ROLL_RIGHT":
             self.roll_right()
-        elif key == "K_a":
+        elif key == "YAW_LEFT":
             self.yaw_left()  # move left lean and move
-        elif key == "K_d":
+        elif key == "YAW_RIGHT":
             self.yaw_right()
-        elif key == "K_w":
+        elif key == "PITCH_DOWN":
             self.forward_pitch_down()  # front goes down and moves forward
-        elif key == "K_s":
+        elif key == "PITCH_UP":
             self.backward_pitch_up()
-        elif key == "K_h":
+        elif key == "STOP":
             self.halt()
-        # else: self.send_current_values()
+        else:
+            self.send_current_values()  # Stops if no command is sent! but with last saved values
 
     def is_commander_link_set(self):
         return self.copter_commander != None

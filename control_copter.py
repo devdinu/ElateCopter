@@ -29,7 +29,7 @@ class ElatedCopter():
 
     def process(self):
         print "ElatedCopter processing ..."
-        cid = self.copter_interface.get_first_copter_within_duration(3)
+        cid = self.copter_interface.get_first_copter_within_duration(5)
         if cid:
             self.copter_interface.connect(cid)
             self.copter_interface.initialize_event_handler()
