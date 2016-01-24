@@ -7,14 +7,14 @@ class CopterCommander():
         self.yaw = 0
         self.roll = self.pitch = 0
         self.copter_commander = None
-        print "initialized copter commander!"
+        print("initialized copter commander!")
 
     def debug_current_values(self):
-        print "=> roll:", self.roll, " pitch: ", self.pitch, " yaw: ", self.yaw, " thrust ", self.thrust
+        print("=> roll:", self.roll, " pitch: ", self.pitch, " yaw: ", self.yaw, " thrust ", self.thrust)
 
     def set_commander(self, commander):
         self.copter_commander = commander
-        print "CopterCommander have been set."
+        print("CopterCommander have been set.")
 
     def check_values_range(self):
         self.thrust = min(self.thrust, CopterConfigs.MAX_THRUST)
@@ -37,7 +37,7 @@ class CopterCommander():
         self.check_values_range()
         self.debug_current_values()
         if self.copter_commander:
-            print "sending commands...."
+            print("sending commands....")
             for d in range(0, 10):
                 self.copter_commander.send_setpoint(self.roll, self.pitch, self.yaw, self.thrust)
 
