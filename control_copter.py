@@ -28,13 +28,13 @@ class ElatedCopter():
         self.copter_interface = CopterInterface()
 
     def process(self):
-        print "ElatedCopter processing ..."
+        print("ElatedCopter processing ...")
         cid = self.copter_interface.get_first_copter_within_duration(5)
         if cid:
             self.copter_interface.connect(cid)
             self.copter_interface.initialize_event_handler()
         else:
-            print "No copters found!!!"
+            print("No copters found!!!")
         self.close()
 
     def close(self):

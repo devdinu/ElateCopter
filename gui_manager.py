@@ -20,13 +20,13 @@ class GUI_manager():
         pygame.mouse.set_visible(0)
         self.callback = callback
         self.QUIT_GUI = False
-        print "initialized GUI!"
+        print("initialized GUI!")
 
     def add_image(self):
         self.screen.blit(Resources.image, Resources.start_point)
 
     def handle_events(self):
-        print "handling keyboard events..."
+        print("handling keyboard events...")
         pygame.event.clear()
         while not self.QUIT_GUI:
             time.sleep(0.1)

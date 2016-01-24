@@ -14,12 +14,12 @@ class CopterInterface():
         cflib.crtp.init_drivers()
         self.crazyflie = None
         self.copter_commander = CopterCommander()
-        print "initialized CopterInterface."
+        print("initialized CopterInterface.")
 
     def get_radio_interfaces(self):
         available_interfaces = cflib.crtp.scan_interfaces()
         for i in available_interfaces:
-            print "[INTF] Interface with URI [%s] found and name/comment [%s]" % (i[0], i[1])
+            print("[INTF] Interface with URI [%s] found and name/comment [%s]" % (i[0], i[1]))
         return [interface for interface in available_interfaces if "radio" in interface[0]]
 
     def get_first_copter_within_duration(self, duration):
@@ -31,13 +31,13 @@ class CopterInterface():
             duration -= 0.5
 
     def connect(self, copter_id):
-        print "[INTF] Connecting to ", copter_id
+        print("[INTF] Connecting to ", copter_id)
         self.crazyflie = Crazyflie()
         self.crazyflie.open_link(copter_id)
         self.add_callback_for_connection()
 
     def close(self):
-        print "[INTF] cleanup..."
+        print("[INTF] cleanup...")
         if self.crazyflie:
             self.crazyflie.close_link()
 
@@ -47,14 +47,14 @@ class CopterInterface():
 
     def test_flight(self):
         while not self.copter_commander.is_commander_link_set():
-            print "In Test Flight Mode ..."
+            print("In Test Flight Mode ...")
             time.sleep(0.3)
         Utils.test_flight_for_short_duration(CopterConfigs.TEST_FLIGHT_TIME, self.crazyflie,
                                              CopterControlParams(thrust=25000))
         print("Test Flight Success.")
 
     def link_commander_to_copter(self, link):
-        print "[INTF] link to copter commander successful.", link
+        print("[INTF] link to copter commander successful.", link)
         self.copter_commander.set_commander(self.crazyflie.commander)
         self.test_flight()
 
