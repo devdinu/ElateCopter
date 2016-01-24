@@ -30,6 +30,3 @@ STOP resets all flight parameters to 0 or respective reset values from `copter_c
 * Download cfclient and add it to path.
 * Install Required modules from requirements.py ```pip install -r requirements.py```
 * fly by running ```python control_copter.py```
-
-
-

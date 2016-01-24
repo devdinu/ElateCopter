@@ -1,3 +1,4 @@
+import logging
 import sys
 
 import time
@@ -11,8 +12,10 @@ from copter_interface import CopterInterface
 from copter_commander import *
 
 
+
 # Other Utils for my customization
 from gui_manager import GUI_manager
+from logger.copter_logger import CopterLogger
 from utils import Utils
 
 
@@ -26,6 +29,13 @@ from utils import Utils
 class ElatedCopter():
     def __init__(self):
         self.copter_interface = CopterInterface()
+        self.setup_logger()
+        # self.connected = False
+
+    def setup_logger(self):
+        copter_logger = CopterLogger()
+        self.copter_interface.add_log_configs_dicts(copter_logger.get_interested_logger())
+        # self.copter_interface.add_close_callbacks(copter_logger.stop_logs)
 
     def process(self):
         print("ElatedCopter processing ...")

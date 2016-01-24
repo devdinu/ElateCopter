@@ -1,5 +1,8 @@
-import pygame
 import time
+
+import pygame
+from copter_config import CopterConfigs
+
 from my_config import MyConfig
 
 
@@ -14,12 +17,18 @@ class GUI_manager():
     def __init__(self, callback):
         pygame.init()
         pygame.font.init()
-        self.screen = pygame.display.set_mode(Resources.window_size, 0, 0)  # pygame.FULLSCREEN, 0)
+
+        self.screen = pygame.display.set_mode(
+            # Resources.window_size, 0, 0)
+            pygame.display.list_modes()[0],
+            pygame.FULLSCREEN)  #
+
         pygame.display.set_caption("Flying QuadCopter")
         pygame.event.set_blocked(pygame.MOUSEMOTION)
         pygame.mouse.set_visible(0)
         self.callback = callback
         self.QUIT_GUI = False
+        self.font = pygame.font.SysFont("monospace", 15)
         print("initialized GUI!")
 
     def add_image(self):
@@ -30,6 +39,7 @@ class GUI_manager():
         pygame.event.clear()
         while not self.QUIT_GUI:
             time.sleep(0.1)
+            pygame.event.pump()
             events = pygame.event.get()
             self.check_for_exit_event(events)
             if not self.QUIT_GUI: self.event_get_keys_handler(events)
@@ -59,9 +69,12 @@ class GUI_manager():
         self.QUIT_GUI = True
         pygame.quit()
 
+    def show_values(self, value):
+        label = self.font.render(value, 1, (255, 255, 0))
+        self.screen.blit(label, (100, 100))
+
     def render_screen(self):
         self.add_image()
-        font = pygame.font.SysFont("monospace", 15)
-        mine = font.render("Chiru...", 1, (255, 255, 0))
+        mine = self.font.render(CopterConfigs.APP_NAME, 1, (255, 255, 0))
         self.screen.blit(mine, (0, 0))
         pygame.display.flip()

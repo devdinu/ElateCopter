@@ -1,4 +1,5 @@
 from copter_config import CopterConfigs
+from logger.copter_logger import CopterLogger
 
 
 class CopterCommander():
@@ -7,10 +8,11 @@ class CopterCommander():
         self.yaw = 0
         self.roll = self.pitch = 0
         self.copter_commander = None
+        self.logger = CopterLogger.get_logger(__name__, log_file=CopterConfigs.commander_log_file, propagate=False)
         print("initialized copter commander!")
 
     def debug_current_values(self):
-        print("=> roll:", self.roll, " pitch: ", self.pitch, " yaw: ", self.yaw, " thrust ", self.thrust)
+        return "=> roll:", self.roll, " pitch: ", self.pitch, " yaw: ", self.yaw, " thrust ", self.thrust
 
     def set_commander(self, commander):
         self.copter_commander = commander
@@ -35,9 +37,8 @@ class CopterCommander():
 
     def send_commands(self):
         self.check_values_range()
-        self.debug_current_values()
+        self.logger.info(self.debug_current_values())
         if self.copter_commander:
-            print("sending commands....")
             for d in range(0, 10):
                 self.copter_commander.send_setpoint(self.roll, self.pitch, self.yaw, self.thrust)
 
