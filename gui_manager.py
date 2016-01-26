@@ -40,6 +40,7 @@ class GUI_manager():
         while not self.QUIT_GUI:
             time.sleep(0.1)
             pygame.event.pump()
+            pygame.event.set_grab(True)
             events = pygame.event.get()
             self.check_for_exit_event(events)
             if not self.QUIT_GUI: self.event_get_keys_handler(events)

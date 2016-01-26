@@ -67,9 +67,8 @@ class CopterInterface():
         print("failed : some error occured callabck" + uri)
 
     def _add_callback_for_connection(self):
-        # self.crazyflie.connected.add_callback(self._link_commander_to_copter) # Not Working???
-        self.crazyflie.link_established.add_callback(self._link_commander_to_copter)
-        self.crazyflie.connected.add_callback(self._create_log_packet) # Never Happens
+        self.crazyflie.connected.add_callback(self._link_commander_to_copter) # Not Working???
+        # self.crazyflie.link_established.add_callback(self._link_commander_to_copter)
         self.crazyflie.disconnected.add_callback(self._disconnected)
         self.crazyflie.connection_failed.add_callback(self._failed)
         self.crazyflie.connection_lost.add_callback(self._lost)

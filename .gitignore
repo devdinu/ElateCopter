@@ -3,3 +3,4 @@
 .idea
 *.json
 *.log
+/spikes
