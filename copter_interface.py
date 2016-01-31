@@ -2,7 +2,6 @@ import time
 
 import cflib
 from cflib import crtp
-
 from crazyflie import Crazyflie
 
 from copter_commander import CopterCommander
@@ -28,9 +27,9 @@ class CopterInterface():
     def configure(self, auto_pilot=False, imu_logger=None):
         if auto_pilot:
             self.imu_logger = imu_logger
-            self.add_connected_callbacks(self._auto_pilot)
+            self._auto_pilot()
         else:
-            self.add_connected_callbacks(self._initialize_gui_event_handler)
+            self._initialize_gui_event_handler()
         print("initialized CopterInterface.")
 
     def get_radio_interfaces(self):
@@ -118,7 +117,7 @@ class CopterInterface():
             if log_conf.valid:
                 log_conf.data_received_cb.add_callback(lc['handler'])
                 log_conf.error_cb.add_callback(self._log_error_logconfig)
-                log_conf.configure()
+                log_conf.start()
                 print("loggers setup in create log packet...")
             else:
                 print("acc.x/y/z not found in log TOC or its invalid")

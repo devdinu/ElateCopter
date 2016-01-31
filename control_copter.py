@@ -1,7 +1,17 @@
 import getopt
+import logging
 import sys
 
 from copter_interface import CopterInterface
+
+
+
+
+
+
+
+
+
 
 
 
@@ -36,23 +46,30 @@ from logger.copter_logger import CopterLogger
 
 
 class ElatedCopter():
-    def __init__(self, auto_pilot=False, copter_logger=None):
+    def __init__(self, auto_pilot=False):
         self.copter_interface = CopterInterface()
-        copter_logger = CopterLogger()
-        if auto_pilot:
-            self.copter_interface.configure(auto_pilot=auto_pilot, imu_logger=copter_logger)
-        self.setup_logger(copter_logger)
-        # self.connected = False
+        self.auto_pilot = auto_pilot
 
-    def setup_logger(self, copter_logger):
+    def configure_interface(self, auto_pilot):
+        copter_logger = self.setup_logger()
+        if auto_pilot:
+            logging.info("Auto Pilot Mode")
+            self.copter_interface.configure(auto_pilot=auto_pilot, imu_logger=copter_logger)
+        else:
+            logging.info("Manual Mode")
+            self.copter_interface.configure()
+
+    def setup_logger(self):
+        copter_logger = CopterLogger()
         self.copter_interface.add_log_configs_dicts(copter_logger.get_interested_loggers())
-        # self.copter_interface.add_close_callbacks(copter_logger.stop_logs)
+        return copter_logger
 
     def process(self):
         print("ElatedCopter processing ...")
         cid = self.copter_interface.get_first_copter_within_duration(5)
         if cid:
             self.copter_interface.connect(cid)
+            self.configure_interface(self.auto_pilot)
         else:
             print("No copters found!!!")
         self.close()
