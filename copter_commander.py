@@ -33,6 +33,8 @@ class CopterCommander():
             self.copter_commander.send_setpoint(self.roll, self.pitch, self.yaw, self.thrust)
 
     def send_commands_from_outside(self, roll, pitch, yaw, thrust):
+        self.check_values_range()
+        self.logger.info(self.debug_current_values())
         self.copter_commander.send_setpoint(roll, pitch, yaw, thrust)
 
     def send_commands(self):

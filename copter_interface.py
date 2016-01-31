@@ -2,6 +2,7 @@ import time
 
 import cflib
 from cflib import crtp
+
 from crazyflie import Crazyflie
 
 from copter_commander import CopterCommander
@@ -9,6 +10,7 @@ from copter_config import CopterConfigs
 from copter_control_parms import CopterControlParams
 from gui_manager import GUI_manager
 from logger.copter_logger import CopterLogger
+from uav.auto_pilot import AutoPilot
 from utils import Utils
 
 
@@ -18,10 +20,17 @@ class CopterInterface():
         self.crazyflie = None
         self.copter_commander = CopterCommander()
         # optional
-        self.connection_callbacks = []  # [self._create_log_packet]
+        self.connection_callbacks = [self._create_log_packet]
         self.close_callbacks = []
         self.log_configs = []
         self.logger = CopterLogger.get_logger(__name__)
+
+    def configure(self, auto_pilot=False, imu_logger=None):
+        if auto_pilot:
+            self.imu_logger = imu_logger
+            self.add_connected_callbacks(self._auto_pilot)
+        else:
+            self.add_connected_callbacks(self._initialize_gui_event_handler)
         print("initialized CopterInterface.")
 
     def get_radio_interfaces(self):
@@ -53,7 +62,7 @@ class CopterInterface():
         for callbacks in self.close_callbacks:
             callbacks()
 
-    def __callbacks_after_connection__(self):
+    def _callbacks_after_connection(self):
         for callbacks in self.connection_callbacks:
             callbacks()
 
@@ -67,8 +76,7 @@ class CopterInterface():
         print("failed : some error occured callabck" + uri)
 
     def _add_callback_for_connection(self):
-        self.crazyflie.connected.add_callback(self._link_commander_to_copter) # Not Working???
-        # self.crazyflie.link_established.add_callback(self._link_commander_to_copter)
+        self.crazyflie.connected.add_callback(self._link_commander_to_copter)
         self.crazyflie.disconnected.add_callback(self._disconnected)
         self.crazyflie.connection_failed.add_callback(self._failed)
         self.crazyflie.connection_lost.add_callback(self._lost)
@@ -85,9 +93,9 @@ class CopterInterface():
         print("[INTF] link to copter commander successful.", link)
         self.copter_commander.set_commander(self.crazyflie.commander)
         self.test_flight()
-        self.__callbacks_after_connection__()
+        self._callbacks_after_connection()
 
-    def initialize_event_handler(self):
+    def _initialize_gui_event_handler(self):
         gui_manager = GUI_manager(self.copter_commander)
         gui_manager.handle_events()
 
@@ -98,7 +106,7 @@ class CopterInterface():
         self.close_callbacks.append(callback)
 
     def add_log_configs_dicts(self, log_conf):
-        self.log_configs += [log_conf]
+        self.log_configs += log_conf
 
     def _create_log_packet(self):
         print("In create log packet {0}".format(len(self.log_configs)))
@@ -110,7 +118,7 @@ class CopterInterface():
             if log_conf.valid:
                 log_conf.data_received_cb.add_callback(lc['handler'])
                 log_conf.error_cb.add_callback(self._log_error_logconfig)
-                log_conf.start()
+                log_conf.configure()
                 print("loggers setup in create log packet...")
             else:
                 print("acc.x/y/z not found in log TOC or its invalid")
@@ -129,3 +137,8 @@ class CopterInterface():
                 self.logger.info("name=%s.%s, index=%d, pytype=%s, ctype=%s" %
                                  (group, param, toc_element.ident, toc_element.pytype,
                                   toc_element.ctype))
+
+    def _auto_pilot(self):
+        self.auto_pilot = AutoPilot(self.copter_commander)
+        self.imu_logger.add_log_listener(self.auto_pilot)
+        self.auto_pilot.fly()

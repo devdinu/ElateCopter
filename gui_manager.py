@@ -1,8 +1,10 @@
 import time
 
 import pygame
-from copter_config import CopterConfigs
 
+from configs.commands import Commands
+
+from copter_config import CopterConfigs
 from my_config import MyConfig
 
 
@@ -19,9 +21,9 @@ class GUI_manager():
         pygame.font.init()
 
         self.screen = pygame.display.set_mode(
-            # Resources.window_size, 0, 0)
-            pygame.display.list_modes()[0],
-            pygame.FULLSCREEN)  #
+            Resources.window_size, 0, 0)
+        # pygame.display.list_modes()[0],
+        # pygame.FULLSCREEN)  #
 
         pygame.display.set_caption("Flying QuadCopter")
         pygame.event.set_blocked(pygame.MOUSEMOTION)
@@ -38,7 +40,7 @@ class GUI_manager():
         print("handling keyboard events...")
         pygame.event.clear()
         while not self.QUIT_GUI:
-            time.sleep(0.1)
+            time.sleep(0.09)
             pygame.event.pump()
             pygame.event.set_grab(True)
             events = pygame.event.get()
@@ -54,17 +56,30 @@ class GUI_manager():
         self.render_screen()
         if not events: self.callback.notify(None)
         key_pressed = pygame.key.get_pressed()
-        if key_pressed[pygame.K_UP]: self.callback.notify("INCREASE_THRUST")
-        if key_pressed[pygame.K_DOWN]: self.callback.notify("DECREASE_THRUST")
-        if key_pressed[pygame.K_LEFT]: self.callback.notify("ROLL_LEFT")
-        if key_pressed[pygame.K_RIGHT]: self.callback.notify("ROLL_RIGHT")
-        if key_pressed[pygame.K_a]: self.callback.notify("YAW_LEFT")
-        if key_pressed[pygame.K_d]: self.callback.notify("YAW_RIGHT")
-        if key_pressed[pygame.K_w]: self.callback.notify("PITCH_DOWN")
-        if key_pressed[pygame.K_s]: self.callback.notify("PITCH_UP")
-        if key_pressed[pygame.K_h]: self.callback.notify("STOP")
-        if key_pressed[pygame.K_SPACE]: self.callback.notify("STOP")
-        if key_pressed[pygame.K_q]: self.clean_and_quit()
+        if key_pressed[pygame.K_UP]:
+            self.callback.notify(Commands.INCREASE_THRUST)
+        elif key_pressed[pygame.K_DOWN]:
+            self.callback.notify(Commands.DECREASE_THRUST)
+        elif key_pressed[pygame.K_LEFT]:
+            self.callback.notify(Commands.YAW_LEFT)
+        elif key_pressed[pygame.K_RIGHT]:
+            self.callback.notify(Commands.YAW_RIGHT)
+        elif key_pressed[pygame.K_a]:
+            self.callback.notify(Commands.ROLL_LEFT)
+        elif key_pressed[pygame.K_d]:
+            self.callback.notify(Commands.ROLL_RIGHT)
+        elif key_pressed[pygame.K_w]:
+            self.callback.notify(Commands.PITCH_DOWN)
+        elif key_pressed[pygame.K_s]:
+            self.callback.notify(Commands.PITCH_UP)
+        elif key_pressed[pygame.K_h]:
+            self.callback.notify(Commands.STOP)
+        elif key_pressed[pygame.K_SPACE]:
+            self.callback.notify(Commands.STOP)
+        elif key_pressed[pygame.K_q]:
+            self.clean_and_quit()
+        else:
+            self.callback.notify(Commands.DEFAULT)
 
     def clean_and_quit(self):
         self.QUIT_GUI = True

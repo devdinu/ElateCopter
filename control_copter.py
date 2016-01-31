@@ -1,22 +1,31 @@
-import logging
+import getopt
 import sys
 
-import time
-
-import crazyflie
-import cflib
-from cflib import *
-from crazyflie import Crazyflie
-from copter_control_parms import CopterControlParams
 from copter_interface import CopterInterface
-from copter_commander import *
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 # Other Utils for my customization
-from gui_manager import GUI_manager
 from logger.copter_logger import CopterLogger
-from utils import Utils
 
 
 # Sample Input
@@ -27,14 +36,16 @@ from utils import Utils
 
 
 class ElatedCopter():
-    def __init__(self):
+    def __init__(self, auto_pilot=False, copter_logger=None):
         self.copter_interface = CopterInterface()
-        self.setup_logger()
+        copter_logger = CopterLogger()
+        if auto_pilot:
+            self.copter_interface.configure(auto_pilot=auto_pilot, imu_logger=copter_logger)
+        self.setup_logger(copter_logger)
         # self.connected = False
 
-    def setup_logger(self):
-        copter_logger = CopterLogger()
-        self.copter_interface.add_log_configs_dicts(copter_logger.get_interested_logger())
+    def setup_logger(self, copter_logger):
+        self.copter_interface.add_log_configs_dicts(copter_logger.get_interested_loggers())
         # self.copter_interface.add_close_callbacks(copter_logger.stop_logs)
 
     def process(self):
@@ -42,7 +53,6 @@ class ElatedCopter():
         cid = self.copter_interface.get_first_copter_within_duration(5)
         if cid:
             self.copter_interface.connect(cid)
-            self.copter_interface.initialize_event_handler()
         else:
             print("No copters found!!!")
         self.close()
@@ -51,4 +61,17 @@ class ElatedCopter():
         self.copter_interface.close()
 
 
-ElatedCopter().process()
+def parse_arguments(args):
+    try:
+        opts, args = getopt.getopt(args, "hag", ["auto", "gui"])
+        for opt, values in opts:
+            if opt in ["-a", "--auto"]:
+                ElatedCopter(auto_pilot=True).process()
+            elif opt in ["-g", "--gui"]:
+                ElatedCopter().process()
+    except getopt.GetoptError as err:
+        print(str(err))
+
+
+if __name__ == "__main__":
+    parse_arguments(sys.argv[1:])

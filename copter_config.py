@@ -16,8 +16,8 @@ class CopterConfigs():
 
     MIN_ROLL = MIN_PITCH = -90
     MAX_ROLL = MAX_PITCH = 90
-    MIN_YAW = 0
-    MAX_YAW = 360
+    MIN_YAW = -180
+    MAX_YAW = 180
 
     MIN_THRUST = 9000
     MAX_THRUST = 60000
@@ -28,13 +28,14 @@ class CopterConfigs():
     YAW_RESET = 0
 
     THRUST_OFFSET = 600
+    THRUST_FLYING_LEVEL = 15000
 
     # MAX_ROLL =
     # MAX_PITCH
     # MAX_YAW
-
     TEST_FLIGHT_TIME = 50
 
     commander_log_file = "log/commander.log"
     interface_log_file = "log/interface.log"
-    inertia_log_file = "log/imu.log"
+    accelo_log_file = "log/accelero.log"
+    gyro_log_file = "log/gyro.log"
