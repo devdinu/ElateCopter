@@ -1,0 +1,5 @@
+appdirs==1.4.0
+mercurial==3.7.1
+pygame==1.9.2a0
+pyusb==1.0.0rc1
+sip==4.18

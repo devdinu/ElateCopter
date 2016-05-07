@@ -11,18 +11,24 @@ class CopterCommander():
         self.logger = CopterLogger.get_logger(__name__, log_file=CopterConfigs.commander_log_file, propagate=False)
         print("initialized copter commander!")
 
-    def debug_current_values(self):
-        return "=> roll:", self.roll, " pitch: ", self.pitch, " yaw: ", self.yaw, " thrust ", self.thrust
+    def debug_current_values(self, param=None):
+        instance = self
+        if param: instance = param
+        return "=> roll:", instance.roll, " pitch: ", instance.pitch, " yaw: ", instance.yaw, " thrust ", instance.thrust
 
     def set_commander(self, commander):
         self.copter_commander = commander
         print("CopterCommander have been set.")
 
-    def check_values_range(self):
-        self.thrust = min(self.thrust, CopterConfigs.MAX_THRUST)
-        self.thrust = max(self.thrust, CopterConfigs.MIN_THRUST)
-        self.yaw = max(self.yaw, CopterConfigs.MIN_YAW)
-        self.yaw = min(self.yaw, CopterConfigs.MAX_YAW)
+    def check_values_range(self, params=None):
+        instance = self
+        if params:
+            instance = params
+        instance.thrust = min(instance.thrust, CopterConfigs.MAX_THRUST)
+        instance.thrust = max(instance.thrust, CopterConfigs.MIN_THRUST)
+        # instance.yaw = max(instance.yaw, CopterConfigs.MIN_YAW)
+        # instance.yaw = min(instance.yaw, CopterConfigs.MAX_YAW)
+        return instance
         # self.roll = max(self.roll, CopterConfigs.MIN_ROLL)
 
     def get_flying_params(self):
@@ -32,10 +38,11 @@ class CopterCommander():
         if self.copter_commander:
             self.copter_commander.send_setpoint(self.roll, self.pitch, self.yaw, self.thrust)
 
-    def send_commands_from_outside(self, roll, pitch, yaw, thrust):
-        self.check_values_range()
-        self.logger.info(self.debug_current_values())
-        self.copter_commander.send_setpoint(roll, pitch, yaw, thrust)
+    def send_commands_from_outside(self, control_params):
+        in_range_values = self.check_values_range(control_params)
+        self.logger.info(self.debug_current_values(control_params))
+        self.copter_commander.send_setpoint(in_range_values.roll, in_range_values.pitch, in_range_values.yaw,
+                                            in_range_values.thrust)
 
     def send_commands(self):
         self.check_values_range()

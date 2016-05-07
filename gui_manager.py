@@ -21,9 +21,8 @@ class GUI_manager():
         pygame.font.init()
 
         self.screen = pygame.display.set_mode(
-            # Resources.window_size, 0, 0)
             pygame.display.list_modes()[0],
-            pygame.FULLSCREEN)  #
+            pygame.FULLSCREEN)
 
         pygame.display.set_caption("Flying QuadCopter")
         pygame.event.set_blocked(pygame.MOUSEMOTION)

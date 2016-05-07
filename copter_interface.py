@@ -38,7 +38,7 @@ class CopterInterface():
             print("[INTF] Interface with URI {0} found and name/comment {1}".format(i[0], i[1]))
         return [interface for interface in available_interfaces if "radio" in interface[0]]
 
-    def get_first_copter_within_duration(self, duration):
+    def get_first_copter(self, duration=CopterConfigs.connection_wait_time):
         radio_interfaces = None
         while not radio_interfaces and duration > 0:
             time.sleep(0.5)

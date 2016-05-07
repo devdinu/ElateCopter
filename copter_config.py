@@ -27,8 +27,8 @@ class CopterConfigs():
     THRUST_RESET = 10000
     YAW_RESET = 0
 
-    THRUST_OFFSET = 600
-    THRUST_FLYING_LEVEL = 15000
+    THRUST_OFFSET = 2000
+    THRUST_FLYING_LEVEL = 40000
 
     # MAX_ROLL =
     # MAX_PITCH
@@ -39,3 +39,6 @@ class CopterConfigs():
     interface_log_file = "log/interface.log"
     accelo_log_file = "log/accelero.log"
     gyro_log_file = "log/gyro.log"
+
+    connection_wait_time = 5
+

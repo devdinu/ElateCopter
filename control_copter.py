@@ -4,36 +4,6 @@ import sys
 
 from copter_interface import CopterInterface
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Other Utils for my customization
 from logger.copter_logger import CopterLogger
 
@@ -66,7 +36,7 @@ class ElatedCopter():
 
     def process(self):
         print("ElatedCopter processing ...")
-        cid = self.copter_interface.get_first_copter_within_duration(5)
+        cid = self.copter_interface.get_first_copter()
         if cid:
             self.copter_interface.connect(cid)
             self.configure_interface(self.auto_pilot)
@@ -91,4 +61,5 @@ def parse_arguments(args):
 
 
 if __name__ == "__main__":
+    print("Running program")
     parse_arguments(sys.argv[1:])
